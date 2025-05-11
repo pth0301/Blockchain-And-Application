@@ -10,7 +10,9 @@ contract tokenSale is Ownable {
     uint256 public SALE_DURATION = 30 days;
     uint256 public startTime;
     uint256 public tokensSold;
-    uint public totalSupply;
+    uint256 public totalSupply;
+
+    event TokensPurchased(address indexed buyer, uint256 amount, uint256 price);
 
     constructor (address _tokenAddress, uint256 _totalSupply) {
         token = Token(_tokenAddress);
@@ -33,6 +35,8 @@ contract tokenSale is Ownable {
 
         tokensSold += amountTokens;
         token.transfer(msg.sender, amountTokens);
+
+        emit TokensPurchased(msg.sender, amountTokens, price);
 
     }
 

@@ -14,6 +14,6 @@ contract Token is Ownable, ERC20 {
         public 
         onlyOwner
     {
-        _mint(msg.sender, amount);
+        _mint(msg.sender, amount *  10 ** decimals());
     }
 }
