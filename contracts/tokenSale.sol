@@ -5,7 +5,6 @@ import "./Token.sol";
 import "hardhat/console.sol";
 
 contract tokenSale is Ownable {
-    
     Token public token;
     uint256 public SALE_DURATION = 30 days;
     uint256 public startTime;
@@ -13,19 +12,13 @@ contract tokenSale is Ownable {
     uint256 public totalSupply;
 
     event TokensPurchased(address indexed buyer, uint256 amount, uint256 price);
-
-    constructor (address _tokenAddress, uint256 _totalSupply) {
+    
+    constructor(address _tokenAddress, uint256 _totalSupply) Ownable(msg.sender) {
         token = Token(_tokenAddress);
-        totalSupply= _totalSupply;
+        totalSupply = _totalSupply;
         startTime = block.timestamp;
     }
-    /** Allow your users to buy up to 50% of the tokens from you by paying ETH to your wallet
-    * When 50% of your tokens are sold, stop allowing other users to buy
-    * Set the price of your token as follows:
-    *  + For the first 25% of your tokens, each token costs 5 ETH
-    *  + After 25% of your tokens were sold, each token costs 10 ETH
-    * After 30 days, stop the token sale campaign
-     */
+
     function buyTokens(uint256 amountTokens) public payable {
         require(block.timestamp <= startTime + SALE_DURATION, "Token sale campaign is stopped");
         require(tokensSold + amountTokens <= (totalSupply / 2), "Buying tokens is stopped");
@@ -37,20 +30,17 @@ contract tokenSale is Ownable {
         token.transfer(msg.sender, amountTokens);
 
         emit TokensPurchased(msg.sender, amountTokens, price);
-
     }
 
-    function getTokenPrice(uint256 amountTokens) public view returns (uint256){
+    function getTokenPrice(uint256 amountTokens) public view returns (uint256) {
         uint256 firstTime = totalSupply / 4;
         uint256 price;
 
-        if (tokensSold + amountTokens <= firstTime){
+        if (tokensSold + amountTokens <= firstTime) {
             price = amountTokens * 5 ether;
-        }else{
+        } else {
             price = amountTokens * 10 ether;
         }
         return price;
     }
-
-
 }

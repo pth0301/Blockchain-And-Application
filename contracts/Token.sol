@@ -8,7 +8,7 @@ contract Token is Ownable, ERC20 {
     string private constant _symbol = 'Titan';               
     string private constant _name = 'Titanium';               
 
-    constructor() ERC20(_name, _symbol) {}
+    constructor() ERC20(_name, _symbol) Ownable(msg.sender) {}
 
     function mint(uint amount) 
         public 
